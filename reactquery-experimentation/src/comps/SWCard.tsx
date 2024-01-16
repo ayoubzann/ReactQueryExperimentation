@@ -5,29 +5,27 @@ type SwObj = {
   name: string;
 };
 
-
-
 const SWCard = () => {
   const query = useQuery(["StarWarsCharacters"], fetchSwapi);
   console.log(query.data);
 
-  let content;
-
-  switch (query.status) {
-    case "success":
-      content = query.data.map((data: SwObj, index: number) => {
-        return <div key={index}>{data.name}</div>;
-      });
-      break;
-    case "loading":
-      content = <h2>Loading...</h2>;
-      break;
-    case "error":
-      content = <>Error: {query.error.message}</>;
-      break;
+  if (query.status === "error") {
+    return <p> Error: Something went wrong. Refresh the page, or try again later.</p>;
   }
 
-  return <div>{content}</div>;
+  if (query.status === "loading") return <p>Loading...</p>;
+
+  if (query.status === "idle") return <p>Idle</p>;
+
+  console.log(query.data[0].name);
+
+  return (
+    <div>
+      {query.data.map((data: SwObj, index: number) => {
+        return <div key={index}>{data.name}</div>;
+      })}
+    </div>
+  );
 };
 
 export default SWCard;
