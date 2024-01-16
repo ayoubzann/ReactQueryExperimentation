@@ -1,13 +1,11 @@
-import { useEffect } from 'react';
 import './App.css'
-import { fetchSwapi } from './utils'
+import SWCard from './comps/SWCard'
 
 function App() {
 
-  useEffect(() => {fetchSwapi();}, []);
   return (
     <>
-      Hello!
+    <SWCard/>
     </>
   )
 }
