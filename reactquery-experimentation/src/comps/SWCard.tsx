@@ -1,13 +1,17 @@
-import { useQuery } from "react-query";
-import { fetchJsonServer } from "../utils";
-
-type SwObj = {
-  name: string;
-};
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { Person, fetchJsonServer, postJsonServer } from "../utils";
 
 const SWCard = () => {
-  const query = useQuery(["StarWarsCharacters"], fetchJsonServer);
+  const query = useQuery({queryKey: ["People"], queryFn: fetchJsonServer});
   console.log(query.data);
+
+  const queryClient = useQueryClient();
+
+  const postMutation = useMutation(postJsonServer, {
+    onSuccess: () => {
+        queryClient.invalidateQueries("People")
+    }
+  });
 
   if (query.status === "error") {
     return <p> Error: Something went wrong. Refresh the page, or try again later.</p>;
@@ -17,11 +21,17 @@ const SWCard = () => {
 
   if (query.status === "idle") return <p>Idle</p>;
 
-  console.log(query.data[0].name);
+  const handleAddPerson = () => {
+    postMutation.mutate();
+  };
+
 
   return (
     <div>
-      {query.data.map((data: SwObj, index: number) => {
+        <button onClick={handleAddPerson} disabled={postMutation.isLoading}>
+        {postMutation.isLoading ? 'Adding...' : 'Add Person'}
+      </button>
+      {query.data.map((data: Person, index: number) => {
         return <div key={index}>{data.name}</div>
       })}
     </div>
