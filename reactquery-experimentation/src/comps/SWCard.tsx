@@ -1,12 +1,12 @@
 import { useQuery } from "react-query";
-import { fetchSwapi } from "../utils";
+import { fetchJsonServer } from "../utils";
 
 type SwObj = {
   name: string;
 };
 
 const SWCard = () => {
-  const query = useQuery(["StarWarsCharacters"], fetchSwapi);
+  const query = useQuery(["StarWarsCharacters"], fetchJsonServer);
   console.log(query.data);
 
   if (query.status === "error") {
@@ -22,7 +22,7 @@ const SWCard = () => {
   return (
     <div>
       {query.data.map((data: SwObj, index: number) => {
-        return <div key={index}>{data.name}</div>;
+        return <div key={index}>{data.name}</div>
       })}
     </div>
   );
