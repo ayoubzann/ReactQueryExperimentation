@@ -1,22 +1,33 @@
-import { useQuery } from 'react-query'
-import { fetchSwapi } from '../utils'
+import { useQuery } from "react-query";
+import { fetchSwapi } from "../utils";
+
+type SwObj = {
+  name: string;
+};
+
+
 
 const SWCard = () => {
+  const query = useQuery(["StarWarsCharacters"], fetchSwapi);
+  console.log(query.data);
 
-    const query = useQuery("StarWarsCharacters", fetchSwapi);
+  let content;
 
-    console.log(query.data);
-  return (
-    <div>
-        {
-            query.data.map((data, index) => {
-                return <div key={index}> 
-                {data.name}
-                </div>
-            })
-        }
-    </div>
-  )
-}
+  switch (query.status) {
+    case "success":
+      content = query.data.map((data: SwObj, index: number) => {
+        return <div key={index}>{data.name}</div>;
+      });
+      break;
+    case "loading":
+      content = <h2>Loading...</h2>;
+      break;
+    case "error":
+      content = <>Error: {query.error.message}</>;
+      break;
+  }
 
-export default SWCard
+  return <div>{content}</div>;
+};
+
+export default SWCard;
